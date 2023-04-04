@@ -1,0 +1,15 @@
+﻿@model UserAccountModel
+@{
+    Layout = "~/Views/Shared/_AuthorizedLayout.cshtml";
+    ViewData["Title"] = $"{Model.Username} account";
+}
+
+
+<div>
+
+    <div>
+        <b>Hi @Model.Username!</b>
+        <p>Your email: @Model.Email</p>
+    </div>
+
+</div>

@@ -1,0 +1,18 @@
+﻿@model NewsPreviewWithPaginationModel
+@{
+    ViewData["Title"] = "News";
+}
+
+
+<div>
+    @foreach (NewsPreviewModel n in Model.NewsPreviews)
+    {
+        <div>
+            <b><a class="link-dark" href="/news/details/@n.Title">@n.Title</a></b>
+            <p>@n.ShortDescription</p>
+            <p>Published @n.PublicationDate.ToString("d") by @n.SourceName. Rate: @n.Rate</p>
+        </div>
+    }
+</div>
+
+<pagination-helper page-info="Model.PageInfo", page-action="Index"></pagination-helper>

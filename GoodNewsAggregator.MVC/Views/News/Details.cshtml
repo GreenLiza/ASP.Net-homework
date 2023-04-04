@@ -1,0 +1,10 @@
+﻿@model NewsModel
+@{
+    ViewData["Title"] = $"{Model.Title}";
+}
+
+<div>
+    <b>@Model.Title</b>
+    <p>@Model.FullText</p>
+    <p>Published @Model.PublicationDate.ToString("d") by @Model.SourceName. Rate: @Model.Rate</p>
+</div>

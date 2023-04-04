@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.Data", "GoodNewsAggregator.Data\GoodNewsAggregator.Data.csproj", "{FBD6A67D-BE0C-4227-9FC0-6266F05C1BED}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.MVC", "GoodNewsAggregator.MVC\GoodNewsAggregator.MVC.csproj", "{C8932E4E-9D55-49B7-A509-4585DD1F8347}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.Abstractions", "GoodNewsAggregator.Abstractions\GoodNewsAggregator.Abstractions.csproj", "{959B859F-974D-45E6-A2CF-D3EB6BFDB5DE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.DTO", "GoodNewsAggregator.DTO\GoodNewsAggregator.DTO.csproj", "{27FD9CB9-A4E6-4BC7-9AC9-3E6B29B3EAF2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GoodNewsAggregator.Business", "GoodNewsAggregator.Business\GoodNewsAggregator.Business.csproj", "{565D5124-147B-4959-B00D-234EB94535CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoodNewsAggregator.Repositories", "GoodNewsAggregator.Ropositories\GoodNewsAggregator.Repositories.csproj", "{65A42377-4A74-4D08-A482-3ECEA60D905A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FBD6A67D-BE0C-4227-9FC0-6266F05C1BED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBD6A67D-BE0C-4227-9FC0-6266F05C1BED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBD6A67D-BE0C-4227-9FC0-6266F05C1BED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBD6A67D-BE0C-4227-9FC0-6266F05C1BED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8932E4E-9D55-49B7-A509-4585DD1F8347}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8932E4E-9D55-49B7-A509-4585DD1F8347}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8932E4E-9D55-49B7-A509-4585DD1F8347}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8932E4E-9D55-49B7-A509-4585DD1F8347}.Release|Any CPU.Build.0 = Release|Any CPU
+		{959B859F-974D-45E6-A2CF-D3EB6BFDB5DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{959B859F-974D-45E6-A2CF-D3EB6BFDB5DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{959B859F-974D-45E6-A2CF-D3EB6BFDB5DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{959B859F-974D-45E6-A2CF-D3EB6BFDB5DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27FD9CB9-A4E6-4BC7-9AC9-3E6B29B3EAF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27FD9CB9-A4E6-4BC7-9AC9-3E6B29B3EAF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27FD9CB9-A4E6-4BC7-9AC9-3E6B29B3EAF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27FD9CB9-A4E6-4BC7-9AC9-3E6B29B3EAF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{565D5124-147B-4959-B00D-234EB94535CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{565D5124-147B-4959-B00D-234EB94535CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{565D5124-147B-4959-B00D-234EB94535CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{565D5124-147B-4959-B00D-234EB94535CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65A42377-4A74-4D08-A482-3ECEA60D905A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65A42377-4A74-4D08-A482-3ECEA60D905A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65A42377-4A74-4D08-A482-3ECEA60D905A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65A42377-4A74-4D08-A482-3ECEA60D905A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1D050C75-C069-4584-B986-8A3A33BE6929}
+	EndGlobalSection
+EndGlobal

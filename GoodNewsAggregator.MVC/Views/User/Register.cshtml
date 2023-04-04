@@ -1,0 +1,39 @@
+﻿@model UserRegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<h3>Register</h3>
+
+<form asp-controller="User" asp-action="Register" asp-antiforgery="true" method="post">
+    <div class="mb-3">
+        <lable class="form-label" asp-for="Username">Username</lable>
+        <input class="form-control" type="text" asp-for="Username" />
+        <span asp-validation-for="Username" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <lable class="form-label" asp-for="Email">Email</lable>
+        <input class="form-control" type="text" asp-for="Email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <lable class="form-label" asp-for="Password">Password</lable>
+        <input class="form-control" type="password" asp-for="Password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <lable class="form-label" asp-for="PasswordConfirmation">Password confirmation</lable>
+        <input class="form-control" type="password" asp-for="PasswordConfirmation" />
+        <span asp-validation-for="PasswordConfirmation" class="text-danger"></span>
+    </div>
+
+    <div>
+        <input type="submit" value="Confirm"/>
+    </div>
+</form>
+
+@section Scripts
+    {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    }
