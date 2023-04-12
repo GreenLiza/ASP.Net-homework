@@ -15,7 +15,8 @@ namespace GoodNewsAggregator.MVC.Mapping
             CreateMap<News, NewsDTO>()
                 .ForMember(dst => dst.SourceName, opt => opt.MapFrom(src => src.Source.Name));
             CreateMap<NewsDTO, NewsModel>();
-
+            CreateMap<FullNewsDTO, News>();
+                        
         }
     }
 }

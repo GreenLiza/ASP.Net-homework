@@ -9,6 +9,8 @@ namespace GoodNewsAggregator.Abstractions.Services
 {
     public interface IUserService
     {
+        Task<UserDto?> GetUserByUsername(string username);
+        Task<int> GetUserRoleId(string username);
         Task<bool> IsUserWithUsernameExistAsync(string username);
         Task<bool> IsUserWithEmailExistAsync(string email);
         Task<bool> IsUserExistAsync(string email, string username);

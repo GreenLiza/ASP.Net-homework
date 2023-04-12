@@ -9,6 +9,7 @@ namespace GoodNewsAggregator.Abstractions.Services
         Task<NewsDTO> GetNewsByTitleAsync(string title);
         Task<NewsDTO> GetNewsByIdAsync(int id);
         Task<int> GetTotalNewsCountAsync();
-        //Task AddAsync(NewsDTO dto);
+        Task CreateNewsAsync(FullNewsDTO fullNewsDTO);
+        
     }
 }

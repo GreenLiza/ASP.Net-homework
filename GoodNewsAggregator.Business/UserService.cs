@@ -43,12 +43,12 @@ namespace GoodNewsAggregator.Business
             return exists;
         }
 
-        public async Task<UserDto?> RegisterUserAsync(string email,  string username, string password)
+        public async Task<UserDto?> RegisterUserAsync(string email, string username, string password)
         {
             if (!await IsUserExistAsync(email, username))
             {
                 var userRoleId = await _roleService.GetRoleIdByName("User");
-                
+
                 var user = new User()
                 {
                     Email = email,
@@ -107,6 +107,26 @@ namespace GoodNewsAggregator.Business
             {
                 throw new ArgumentException("User with that username does not exist", nameof(username));
             }
+        }
+
+        public async Task<int> GetUserRoleId(string username)
+        {
+            var roleId = await _unitOfWork.Users.FindBy(user => user.Username.Equals(username))
+            .Select(user => user.RoleId)
+            .FirstOrDefaultAsync();
+
+            return roleId;
+        }
+
+        public async Task<UserDto?> GetUserByUsername(string username)
+        {
+            var user = await _unitOfWork.Users.GetUserByUsernameAsync(username);
+            if (user != null)
+            {
+                var userDto = _mapper.Map<UserDto>(user);
+                return userDto;
+            }
+            return null;
         }
     }
 }

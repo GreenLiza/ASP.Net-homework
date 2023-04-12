@@ -5,12 +5,12 @@ using GoodNewsAggregator.MVC.Models;
 
 namespace GoodNewsAggregator.MVC.Mapping
 {
-    public class UserProfile : Profile
+    public class SourceProfile : Profile
     {
-        public UserProfile()
+        public SourceProfile()
         {
-            CreateMap<UserDto, User>().ReverseMap();
-            CreateMap<UserAccountModel, UserDto>().ReverseMap();
+            CreateMap<SourceDto, Source>().ReverseMap();
+            
             
 
         }

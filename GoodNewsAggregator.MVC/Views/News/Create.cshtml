@@ -1,0 +1,39 @@
+﻿@model NewsCreateModel
+@{
+    ViewData["Title"] = "Create news";
+}
+
+<h3>Create news</h3>
+
+<form asp-controller="News" asp-action="Create" asp-antiforgery="true" method="post">
+    <div class="mb-3">
+        <lable class="form-label" asp-for="Title">Title</lable>
+        <input class="form-control" type="text" asp-for="Title" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <lable class="form-label" asp-for="ShortDescription">Short description</lable>
+        <textarea class="form-control" rows="5" asp-for="ShortDescription"></textarea>
+        <span asp-validation-for="ShortDescription" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <lable class="form-label" asp-for="FullText">Full text</lable>
+        <textarea class="form-control" rows="10" asp-for="FullText"></textarea>
+        <span asp-validation-for="FullText" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <lable class="form-label" asp-for="SourceName">Source name</lable>
+        <select class="form-select" asp-for="SourceName" asp-items="@Model.AvailableSources"></select>
+        <span asp-validation-for="SourceName" class="text-danger"></span>
+    </div>
+
+    <div>
+        <input class="btn-secondary" type="submit" value="Confirm"/>
+    </div>
+</form>
+
+@section Scripts
+    {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    }

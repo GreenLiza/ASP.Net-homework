@@ -25,5 +25,14 @@ namespace GoodNewsAggregator.Business
 
             return roleId;
         }
+
+        public async Task<string> GetRoleNameById(int id)
+        {
+            var roleName = await _unitOfWork.Roles.FindBy(role => role.Id.Equals(id))
+                .Select(role => role.Name)
+                .FirstOrDefaultAsync();
+
+            return roleName;
+        }
     }
 }

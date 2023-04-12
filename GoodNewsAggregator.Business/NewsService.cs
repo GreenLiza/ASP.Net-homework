@@ -11,12 +11,14 @@ namespace GoodNewsAggregator.Business
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ISourceService _sourceService;
 
 
-        public NewsService(IUnitOfWork unitOfWork, IMapper mapper)
+        public NewsService(IUnitOfWork unitOfWork, IMapper mapper, ISourceService sourceService)
         { 
             _unitOfWork= unitOfWork;
             _mapper = mapper;
+            _sourceService = sourceService;
         }
 
         public async Task<NewsDTO?> GetNewsByIdAsync(int id)
@@ -67,5 +69,10 @@ namespace GoodNewsAggregator.Business
             return count;
         }
 
+        public async Task CreateNewsAsync(FullNewsDTO fullNewsDTO)
+        {
+            var news = _unitOfWork.News.AddAsync(_mapper.Map<News>(fullNewsDTO));
+            _unitOfWork.SaveChangesAsync();
+        }
     }
 }

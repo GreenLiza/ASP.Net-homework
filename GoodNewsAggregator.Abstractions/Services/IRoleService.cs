@@ -9,5 +9,6 @@ namespace GoodNewsAggregator.Abstractions.Services
     public interface IRoleService
     {
         Task<int> GetRoleIdByName(string name);
+        Task<string> GetRoleNameById(int id);
     }
 }

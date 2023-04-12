@@ -6,6 +6,7 @@ using GoodNewsAggregator.Data;
 using GoodNewsAggregator.Data.Entities;
 using GoodNewsAggregator.Repositories.Implementations;
 using GoodNewsAggregator.Ropositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 namespace GoodNewsAggregator.MVC
@@ -37,8 +38,17 @@ namespace GoodNewsAggregator.MVC
             builder.Services.AddTransient<INewsService, NewsService>();
             builder.Services.AddTransient<IUserService, UserService>();
             builder.Services.AddTransient<IRoleService, RoleService>();
+            builder.Services.AddTransient<ISourceService, SourceService>();
 
             builder.Services.AddAutoMapper(typeof(Program));
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = new PathString("/User/LogIn");
+                    options.AccessDeniedPath = new PathString("/User/LogIn");
+                });
+            builder.Services.AddAuthorization();
 
             builder.Services.AddControllersWithViews();
 
@@ -57,7 +67,8 @@ namespace GoodNewsAggregator.MVC
 
             app.UseRouting();
 
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "title",

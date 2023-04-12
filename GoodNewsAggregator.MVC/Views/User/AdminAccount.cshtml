@@ -1,0 +1,17 @@
+﻿@model UserAccountModel
+@{
+    ViewData["Title"] = $"Admin {Model.Username} account";
+}
+
+
+<div>
+
+    <div>
+        <b>Hi admin @Model.Username!</b>
+        <p>Your email: @Model.Email</p>
+    </div>
+
+    <div>
+        <a class="btn btn-secondary" role="button" asp-action="Create" asp-controller="News">Create new news article</a>
+    </div>
+</div>

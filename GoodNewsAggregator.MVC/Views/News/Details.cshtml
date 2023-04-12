@@ -1,10 +1,11 @@
-﻿@model NewsModel
+﻿@model NewsDetailsViewModel
 @{
-    ViewData["Title"] = $"{Model.Title}";
+    ViewData["Title"] = $"{Model.NewsModel.Title}";
 }
 
 <div>
-    <b>@Model.Title</b>
-    <p>@Model.FullText</p>
-    <p>Published @Model.PublicationDate.ToString("d") by @Model.SourceName. Rate: @Model.Rate</p>
+    <b>@Model.NewsModel.Title</b>
+    <p>@Model.NewsModel.FullText</p>
+    <p>Published @Model.NewsModel.PublicationDate.ToString("d") by @Model.NewsModel.SourceName. Rate: @Model.NewsModel.Rate</p>
+    <b><a class="btn btn-secondary" role="button" asp-action="Index" asp-controller="News" asp-route-page="@Model.PageNumber">return</a></b>
 </div>

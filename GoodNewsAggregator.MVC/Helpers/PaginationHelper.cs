@@ -33,7 +33,7 @@ namespace GoodNewsAggregator.MVC.Helpers
             {
                 var tag = new TagBuilder("a");
                 var anchorInnerHtml = i.ToString();
-                tag.AddCssClass("btn btn-outline-dark");
+                tag.AddCssClass("btn btn-outline-secondary");
                 if (ViewContext.HttpContext.Request.Query.ContainsKey("page") &&
                     int.TryParse(ViewContext.HttpContext.Request.Query["page"], out var actualPage))
                 {

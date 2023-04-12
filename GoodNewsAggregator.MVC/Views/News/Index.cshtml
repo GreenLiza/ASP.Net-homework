@@ -4,14 +4,11 @@
 }
 
 
-<div>
-    @foreach (NewsPreviewModel n in Model.NewsPreviews)
+<div class="row">
+    @foreach (NewsPreviewModel newsModel in Model.NewsPreviews)
     {
-        <div>
-            <b><a class="link-dark" href="/news/details/@n.Title">@n.Title</a></b>
-            <p>@n.ShortDescription</p>
-            <p>Published @n.PublicationDate.ToString("d") by @n.SourceName. Rate: @n.Rate</p>
-        </div>
+        var newsWithPageModel = new NewsPreviewWithPageModel(newsModel, Model.PageInfo.PageNumber);
+        await Html.RenderPartialAsync("NewsPreviewPartial", newsWithPageModel);
     }
 </div>
 
