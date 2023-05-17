@@ -14,6 +14,7 @@ namespace GoodNewsAggregator.Abstractions.Repositories
         Task<News> GetNewsByTitleAsync(string title);
         public Task<List<News>> GetNewsByPageAsync(int page, int pageSize);
         Task<List<News>> GetNewsListAsync();
+        Task EditNewsArticleAsync(News news);
 
     }
 }

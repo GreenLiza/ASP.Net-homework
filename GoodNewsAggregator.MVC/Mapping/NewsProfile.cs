@@ -9,14 +9,20 @@ namespace GoodNewsAggregator.MVC.Mapping
     {
         public NewsProfile()
         {
-            CreateMap<NewsPreviewDTO, NewsPreviewModel>();
-            CreateMap<News, NewsPreviewDTO>()
+             CreateMap<NewsPreviewDTO, NewsPreviewModel>();
+             CreateMap<News, NewsPreviewDTO>()
                 .ForMember(dst => dst.SourceName, opt => opt.MapFrom(src => src.Source.Name));
-            CreateMap<News, NewsDTO>()
+             CreateMap<News, FullNewsDTO>()
                 .ForMember(dst => dst.SourceName, opt => opt.MapFrom(src => src.Source.Name));
-            CreateMap<NewsDTO, NewsModel>();
-            CreateMap<FullNewsDTO, News>();
-                        
+             CreateMap<News, FullNewsWithIdDTO>()
+                .ForMember(dst => dst.SourceName, opt => opt.MapFrom(src => src.Source.Name));
+             CreateMap<FullNewsDTO, NewsModel>();
+             CreateMap<FullNewsDTO, News>();
+             CreateMap<FullNewsWithIdDTO, NewsEditModel>();
+             CreateMap<EditNewsDTO, NewsEditModel>().ReverseMap();
+             CreateMap<EditNewsDTO, News>().ReverseMap();
+             CreateMap<FullNewsWithIdDTO, NewsModel>().ReverseMap();
+
         }
     }
 }

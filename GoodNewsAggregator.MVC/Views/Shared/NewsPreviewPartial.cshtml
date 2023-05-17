@@ -6,7 +6,7 @@
     </div>
     <div class="card-body">
         <blockquote class="blockquote mb-0">
-            <p>@Model.ShortDescription</p>
+            <p>@Html.Raw(Model.ShortDescription)</p>
             <footer class="blockquote-footer">Published @Model.PublicationDate.ToString("d") by @Model.SourceName. Rate: @Model.Rate</footer>
         </blockquote>
     </div>

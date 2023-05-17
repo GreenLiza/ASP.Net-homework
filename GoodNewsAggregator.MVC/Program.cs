@@ -8,6 +8,8 @@ using GoodNewsAggregator.Repositories.Implementations;
 using GoodNewsAggregator.Ropositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using Serilog.Events;
 
 namespace GoodNewsAggregator.MVC
 {
@@ -18,6 +20,8 @@ namespace GoodNewsAggregator.MVC
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            builder.Host.UseSerilog((ctx, lc)=>lc.ReadFrom.Configuration(ctx.Configuration));
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -61,6 +65,8 @@ namespace GoodNewsAggregator.MVC
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseSerilogRequestLogging();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

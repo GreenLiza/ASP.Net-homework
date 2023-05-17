@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.ServiceModel.Syndication" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GoodNewsAggregator.Data\GoodNewsAggregator.Data.csproj" />
     <ProjectReference Include="..\GoodNewsAggregator.DTO\GoodNewsAggregator.DTO.csproj" />
   </ItemGroup>

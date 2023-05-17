@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using GoodNewsAggregator.Abstractions;
 using GoodNewsAggregator.Abstractions.Services;
+using GoodNewsAggregator.Data.Entities;
 using GoodNewsAggregator.DTO;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -20,11 +21,22 @@ namespace GoodNewsAggregator.Business
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public int GetSourceId(string sourceName)
+        public async Task AddDefaultSource()
         {
-            var sourceId = _unitOfWork.Sources.FindBy(source => source.Name.Equals(sourceName))
+            var source = new Source()
+            {
+                Name = "Good News",
+                Link = ""
+            };
+            await _unitOfWork.Sources.AddAsync(source);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<int> GetSourceId(string sourceName)
+        {
+            var sourceId =await _unitOfWork.Sources.FindBy(source => source.Name.Equals(sourceName))
                 .Select(source => source.Id)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             return sourceId;
         }
@@ -35,6 +47,23 @@ namespace GoodNewsAggregator.Business
                 .Select(source => _mapper.Map<SourceDto>(source))
                 .ToListAsync();
             return sourceDtos;
+        }
+
+        public async Task<SourceDto> GetSourceByRssLinkAsync(string RssLink)
+        {
+            var sourceDto = await _unitOfWork.Sources.FindBy(source => source.RssLink.Equals(RssLink))
+                .Select(source => _mapper.Map<SourceDto>(source))
+                .FirstOrDefaultAsync();
+            return sourceDto;
+        }
+
+        public async Task<List<string>> GetSourcesRssLinksAsync()
+        {
+            var sourcesRssLinks = await _unitOfWork.Sources.GetAsQueryable()
+                .Where(source => (source.RssLink != null && source.RssLink != ""))
+                .Select(source => source.RssLink)
+                .ToListAsync();
+            return sourcesRssLinks;
         }
     }
 }

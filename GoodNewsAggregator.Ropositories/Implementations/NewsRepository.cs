@@ -30,5 +30,14 @@ namespace GoodNewsAggregator.Repositories.Implementations
             List<News> news = await DbSet.Include(x => x.Source).ToListAsync();
             return news;
         }
+
+        public async Task EditNewsArticleAsync(News news)
+        {
+            var entity = await DbSet.FirstOrDefaultAsync(entity => entity.Id == news.Id);
+            entity.Title = news.Title;
+            entity.ShortDescription = news.ShortDescription;
+            entity.FullText = news.FullText;
+            DbSet.Update(entity);
+        }
     }
 }

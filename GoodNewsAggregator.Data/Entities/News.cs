@@ -8,6 +8,7 @@
         public string FullText { get; set; }
         public DateTime PublicationDate { get; set; }    
         public double Rate { get; set; }
+        public string LinkToSource { get; set; }
         public List<Comment> Comments { get; set; }
         public int SourceId { get; set; }
         public Source Source { get; set; }

@@ -6,10 +6,14 @@ namespace GoodNewsAggregator.Abstractions.Services
     {
         Task<List<NewsPreviewDTO>> GetNewsByPageAsync(int page, int pageSize);
         Task<List<NewsPreviewDTO>> GetNewsListAsync();
-        Task<NewsDTO> GetNewsByTitleAsync(string title);
-        Task<NewsDTO> GetNewsByIdAsync(int id);
+        Task<List<FullNewsDTO>> GetFullNewsByPageAsync(int page, int pageSize);
+        Task<FullNewsWithIdDTO> GetNewsByTitleAsync(string title);
+        Task<FullNewsWithIdDTO> GetNewsByIdAsync(int id);
         Task<int> GetTotalNewsCountAsync();
         Task CreateNewsAsync(FullNewsDTO fullNewsDTO);
-        
+        Task EditNewsArticleAsync(EditNewsDTO editNewsDTO);
+        Task RemoveNewsByTitleAsync(string title);
+        Task<List<FullNewsDTO>> GetNewsFromSourceRss(string link);
+
     }
 }

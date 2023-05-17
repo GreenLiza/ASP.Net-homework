@@ -1,32 +1,27 @@
-﻿@model NewsCreateModel
+﻿@model NewsEditModel
 @{
-    ViewData["Title"] = "Create news";
+    ViewData["Title"] = "Edit news";
 }
 
-<h3>Create news</h3>
+<h3>Edit news</h3>
 
-<form asp-controller="News" asp-action="Create" asp-antiforgery="true" method="post">
+<form asp-controller="News" asp-action="Edit" asp-antiforgery="true" method="post">
+    <input type="hidden" asp-for="Id" />
     <div class="mb-3">
         <lable class="form-label" asp-for="Title">Title</lable>
-        <input class="form-control" type="text" asp-for="Title" />
+        <textarea class="form-control" rows="1" asp-for="Title">@Model.Title</textarea>
         <span asp-validation-for="Title" class="text-danger"></span>
     </div>
     <div class="mb-3">
         <lable class="form-label" asp-for="ShortDescription">Short description</lable>
-        <textarea class="form-control" rows="5" asp-for="ShortDescription"></textarea>
+        <textarea class="form-control" rows="5" asp-for="ShortDescription">@Model.ShortDescription</textarea>
         <span asp-validation-for="ShortDescription" class="text-danger"></span>
     </div>
     <div class="mb-3">
         <lable class="form-label" asp-for="FullText">Full text</lable>
-        <textarea class="form-control" rows="10" asp-for="FullText"></textarea>
+        <textarea class="form-control" rows="10" asp-for="FullText">@Model.FullText</textarea>
         <span asp-validation-for="FullText" class="text-danger"></span>
     </div>
-    @*<div class="mb-3">
-        <lable class="form-label" asp-for="SourceName">Source name</lable>
-        <select class="form-select" asp-for="SourceName" asp-items="@Model.AvailableSources"></select>
-        <span asp-validation-for="SourceName" class="text-danger"></span>
-    </div>*@
-
     <div>
         <input class="btn-secondary" type="submit" value="Confirm"/>
     </div>
