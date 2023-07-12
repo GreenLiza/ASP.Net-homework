@@ -14,6 +14,7 @@ namespace GoodNewsAggregator.Abstractions.Services
         Task EditNewsArticleAsync(EditNewsDTO editNewsDTO);
         Task RemoveNewsByTitleAsync(string title);
         Task<List<FullNewsDTO>> GetNewsFromSourceRss(string link);
+        Task<double> RateNewsTextAsync(string? newsText);
 
     }
 }

@@ -1,13 +1,13 @@
 ﻿@model NewsPreviewWithPageModel
 
-<div class="card border-success m-1 col-sm-12 col-md-6 col-lg-4">
+<div class="card border-success col-sm-12 col-md-6 col-lg-4">
     <div class="card-header">
         <b><a class="link-success" asp-action="Details" asp-controller="News" asp-route-title="@Model.Title" asp-route-page="@Model.Page">@Model.Title</a></b>
     </div>
     <div class="card-body">
         <blockquote class="blockquote mb-0">
             <p>@Html.Raw(Model.ShortDescription)</p>
-            <footer class="blockquote-footer">Published @Model.PublicationDate.ToString("d") by @Model.SourceName. Rate: @Model.Rate</footer>
+            <footer class="blockquote-footer">Published @Model.PublicationDate.ToString("d") by @Model.SourceName. Rate:&nbsp;@Model.Rate</footer>
         </blockquote>
     </div>
 </div>

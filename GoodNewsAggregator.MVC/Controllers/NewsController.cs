@@ -10,6 +10,8 @@ using System.Reflection.PortableExecutable;
 using System.ServiceModel.Syndication;
 using System.Xml;
 using System;
+using GoodNewsAggregator.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace GoodNewsAggregator.MVC.Controllers
 {
@@ -30,35 +32,58 @@ namespace GoodNewsAggregator.MVC.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, string sortBy = "default")
         {
-            _logger.LogInformation("Index is called");
+            _logger.LogInformation("Index page is called");
 
-            var totalNewsCount = await _newsService.GetTotalNewsCountAsync();
-
-            if (int.TryParse(_configuration["Pagination:News:DefaultPageSize"], out int pageSize))
+            try
             {
+                var totalNewsCount = await _newsService.GetTotalNewsCountAsync();
+                int.TryParse(_configuration["Pagination:News:DefaultPageSize"], out int pageSize);
+                if (pageSize == 0)
+                {
+                    pageSize = 6;
+                }
+
                 var pageInfo = new PageInfo()
                 {
                     PageSize = pageSize,
                     PageNumber = page,
                     TotalElements = totalNewsCount
                 };
-                List<NewsPreviewDTO> newsDtos = await _newsService.GetNewsByPageAsync(page, pageSize);
+
+                //List<NewsPreviewDTO> newsDtos = await _newsService.GetNewsByPageAsync(page, pageSize);
+                List<NewsPreviewDTO> newsDtos = await _newsService.GetNewsListAsync();
                 List<NewsPreviewModel> newsPreview = newsDtos
                     .Select(Dto => _mapper.Map<NewsPreviewModel>(Dto))
                     .ToList();
 
-                return View(new NewsPreviewWithPaginationModel()
+                switch (sortBy)
                 {
+                    case "date":
+                        newsPreview = newsPreview.OrderByDescending(o => o.PublicationDate).ToList();
+                        break;
+                    case "rate":
+                        newsPreview = newsPreview.OrderByDescending(o => o.Rate).ToList();
+                        break;
+                    case "default":
+                        break;
+                }
+
+                newsPreview = newsPreview.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                return View(new NewsPreviewWithAdditionalInfoModel()
+                {
+                    SortBy = sortBy,
                     NewsPreviews = newsPreview,
                     PageInfo = pageInfo
                 });
 
             }
-            else
+            catch(Exception ex)
             {
-                return Content($"Configuration doesn't exist");
+                _logger.LogError(ex.Message, ex);
+                return RedirectToAction("Error", "Home");   
             }
 
         }
@@ -66,10 +91,11 @@ namespace GoodNewsAggregator.MVC.Controllers
         [Authorize]
         public async Task<IActionResult> Details(string title, int page)
         {
-            var newsDto = await _newsService.GetNewsByTitleAsync(title);
+            _logger.LogInformation("Details page is called");
 
-            if (newsDto != null)
+            try
             {
+                var newsDto = await _newsService.GetNewsByTitleAsync(title);
                 NewsModel newsModel = _mapper.Map<NewsModel>(newsDto);
                 NewsDetailsViewModel newsDetailsViewModel = new NewsDetailsViewModel()
                 {
@@ -78,19 +104,20 @@ namespace GoodNewsAggregator.MVC.Controllers
                 };
                 return View(newsDetailsViewModel);
             }
-            return Content($"Article {title} doesn't exist");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
+            _logger.LogInformation("Create page is called");
+
             var model = new NewsCreateModel();
-            //{
-            //    AvailableSources = (await _sourceService.GetSourcesAsync())
-            //        .Select(source => new SelectListItem(source.Name, source.Name))
-            //        .ToList()
-            //};
             return View(model);
         }
 
@@ -98,61 +125,88 @@ namespace GoodNewsAggregator.MVC.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(NewsCreateModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var sourceName = "Good News";
-                var sourceId = await _sourceService.GetSourceId(sourceName);
-                if (sourceId == 0)
+                if (ModelState.IsValid)
                 {
-                    await _sourceService.AddDefaultSource();
-                    sourceId = await _sourceService.GetSourceId(sourceName);
-                }
-                var fullNewsDto = new FullNewsDTO()
-                {
-                    LinkToSource = "",
-                    Title = model.Title,
-                    ShortDescription = model.ShortDescription,
-                    FullText = model.FullText,
-                    PublicationDate = DateTime.Now,
-                    Rate = 0,
-                    SourceName = sourceName,
-                    SourceId = sourceId
-                    //SourceName = model.SourceName,
-                    //SourceId = _sourceService.GetSourceId(model.SourceName)
-                };
-                await _newsService.CreateNewsAsync(fullNewsDto);
-                return RedirectToAction("Index", "News");
+                    _logger.LogInformation("New news article content passed validation");
+                    var sourceName = "Good News";
+                    var sourceId = await _sourceService.GetSourceId(sourceName);
+                    if (sourceId == 0)
+                    {
+                        await _sourceService.AddDefaultSource();
+                        sourceId = await _sourceService.GetSourceId(sourceName);
+                    }
+                    var rate = _newsService.RateNewsTextAsync(model.FullText);
+                    var fullNewsDto = new FullNewsDTO()
+                    {
+                        LinkToSource = "",
+                        Title = model.Title,
+                        ShortDescription = model.ShortDescription,
+                        FullText = model.FullText,
+                        PublicationDate = DateTime.Now,
+                        Rate = rate.Result,
+                        SourceName = sourceName,
+                        SourceId = sourceId
+                    };
+                    await _newsService.CreateNewsAsync(fullNewsDto);
+                    _logger.LogInformation("New news article is created");
+                    return RedirectToAction("Index", "News");
 
+                }
+                _logger.LogInformation("New news article content failed validation");
+                return View();
             }
-            return View();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [Authorize(Roles = "Admin")]
-        public async Task GetWithRss()
+        public async Task<IActionResult> GetWithRss()
         {
-            var rssLinks = await _sourceService.GetSourcesRssLinksAsync();
-            foreach (string link in rssLinks)
+            _logger.LogInformation("News collection has started");
+
+            try
             {
-                var fullNewsDtos = await _newsService.GetNewsFromSourceRss(link);
-                foreach (var fullNewsDto in fullNewsDtos)
+                var rssLinks = await _sourceService.GetSourcesRssLinksAsync();
+                foreach (string link in rssLinks)
                 {
-                    if ((await _newsService.GetNewsByTitleAsync(fullNewsDto.Title)) == null)
+                    var fullNewsDtos = await _newsService.GetNewsFromSourceRss(link);
+                    foreach (var fullNewsDto in fullNewsDtos)
                     {
-                        await _newsService.CreateNewsAsync(fullNewsDto);
+                        if ((await _newsService.GetNewsByTitleAsync(fullNewsDto.Title)) == null)
+                        {
+                            await _newsService.CreateNewsAsync(fullNewsDto);
+                        }
                     }
                 }
+                _logger.LogInformation("News collection is successful");
+                return RedirectToAction("Update", "News");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return RedirectToAction("Error", "Home");
             }
         }
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int page = 1)
         {
-            _logger.LogInformation("Update is called");
+            _logger.LogInformation("Update page is called");
 
-            var totalNewsCount = await _newsService.GetTotalNewsCountAsync();
-
-            if (int.TryParse(_configuration["Pagination:News:UpdateNewsPageSize"], out int pageSize))
+            try
             {
+                var totalNewsCount = await _newsService.GetTotalNewsCountAsync();
+
+                int.TryParse(_configuration["Pagination:News:UpdateNewsPageSize"], out int pageSize);
+                if (pageSize == 0)
+                {
+                    pageSize = 3;
+                }
                 var pageInfo = new PageInfo()
                 {
                     PageSize = pageSize,
@@ -161,7 +215,7 @@ namespace GoodNewsAggregator.MVC.Controllers
                 };
 
                 List<FullNewsDTO> newsDtos = await _newsService.GetFullNewsByPageAsync(page, pageSize);
-               
+
                 List<FullNewsModel> fullNews = newsDtos
                    .Select(Dto => new FullNewsModel()
                    {
@@ -176,10 +230,12 @@ namespace GoodNewsAggregator.MVC.Controllers
                     PageInfo = pageInfo
                 });
 
+
             }
-            else
+            catch (Exception ex)
             {
-                return Content($"Configuration doesn't exist");
+                _logger.LogError(ex.Message, ex);
+                return RedirectToAction("Error", "Home");
             }
         }
 
@@ -188,28 +244,56 @@ namespace GoodNewsAggregator.MVC.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(string title)
         {
-            var newsDto = await _newsService.GetNewsByTitleAsync(title);
-            var model = _mapper.Map<NewsEditModel>(newsDto);
-            return View(model);
+            _logger.LogInformation("Edit page is called");
+            try
+            {
+                var newsDto = await _newsService.GetNewsByTitleAsync(title);
+                var model = _mapper.Map<NewsEditModel>(newsDto);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return RedirectToAction("Error", "Home");
+            }
         }
         [HttpPost]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(NewsEditModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var newsDto = _mapper.Map<EditNewsDTO>(model);
-                await _newsService.EditNewsArticleAsync(newsDto);
-                return RedirectToAction("Update", "News");
+                if (ModelState.IsValid)
+                {
+                    _logger.LogInformation("Edited news article content passed validation");
+                    var newsDto = _mapper.Map<EditNewsDTO>(model);
+                    await _newsService.EditNewsArticleAsync(newsDto);
+                    return RedirectToAction("Update", "News");
+                }
+                _logger.LogInformation("Edited news article content failed validation");
+                return View();
             }
-            return View();
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Remove(string title)
         {
-            await _newsService.RemoveNewsByTitleAsync(title);
-            return RedirectToAction("Update", "News");
+            try
+            {
+                await _newsService.RemoveNewsByTitleAsync(title);
+                _logger.LogInformation("News article was removed");
+                return RedirectToAction("Update", "News");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return RedirectToAction("Error", "Home");
+            }
         }
     }
 }

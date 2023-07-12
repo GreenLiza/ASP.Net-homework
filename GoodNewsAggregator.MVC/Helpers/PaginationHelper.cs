@@ -19,6 +19,7 @@ namespace GoodNewsAggregator.MVC.Helpers
 
         public PageInfo PageInfo { get; set; }
         public string PageAction { get; set; }
+        public string SortBy { get; set; }
 
         [ViewContext]
         [HtmlAttributeNotBound]
@@ -49,7 +50,7 @@ namespace GoodNewsAggregator.MVC.Helpers
                         tag.AddCssClass("active");
                     }
                 }
-                tag.Attributes["href"] = urlHelper.Action(PageAction, new { page = i });
+                tag.Attributes["href"] = urlHelper.Action(PageAction, new { page = i, sortBy = SortBy });
                 tag.InnerHtml.Append(anchorInnerHtml);
                 result.InnerHtml.AppendHtml(tag);
             }

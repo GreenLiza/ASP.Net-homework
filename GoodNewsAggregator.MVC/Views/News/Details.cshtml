@@ -7,5 +7,5 @@
     <b>@Model.NewsModel.Title</b>
     <p>@Html.Raw(Model.NewsModel.FullText)</p>
     <p>Published @Model.NewsModel.PublicationDate.ToString("d") by @Model.NewsModel.SourceName. Rate: @Model.NewsModel.Rate</p>
-    <b><a class="btn btn-secondary" role="button" asp-action="Index" asp-controller="News" asp-route-page="@Model.PageNumber">return</a></b>
+    @*<b><a class="btn btn-secondary" role="button" asp-action="Index" asp-controller="News" asp-route-page="@Model.PageNumber">return</a></b>*@
 </div>

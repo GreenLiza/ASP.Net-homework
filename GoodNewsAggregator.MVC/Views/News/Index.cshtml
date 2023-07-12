@@ -1,9 +1,16 @@
-﻿@model NewsPreviewWithPaginationModel
+﻿@model NewsPreviewWithAdditionalInfoModel
 @{
     ViewData["Title"] = "News";
 }
-
-
+<div class="btn-group" role="group">
+    <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        Sort by...
+    </button>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" asp-action="Index" asp-controller="News" asp-route-sortBy="date">Date</a></li>
+        <li><a class="dropdown-item" asp-action="Index" asp-controller="News" asp-route-sortBy="rate">Rate</a></li>
+    </ul>
+</div>
 <div class="row">
     @foreach (NewsPreviewModel newsModel in Model.NewsPreviews)
     {
@@ -12,4 +19,4 @@
     }
 </div>
 
-<pagination-helper page-info="Model.PageInfo", page-action="Index"></pagination-helper>
+<pagination-helper page-info="Model.PageInfo", page-action="Index" sort-by="@Model.SortBy"></pagination-helper>

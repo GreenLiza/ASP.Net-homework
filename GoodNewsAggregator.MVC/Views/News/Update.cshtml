@@ -32,8 +32,13 @@
                     <blockquote class="blockquote mb-0">
                         <h5>@newsModel.NewsModel.Title</h5>
                         <p>@Html.Raw(newsModel.ShortDescription)</p>
-                        <p>@Html.Raw(newsModel.NewsModel.FullText)</p>
-                        <footer class="blockquote-footer">Published @newsModel.NewsModel.PublicationDate.ToString("d") by @newsModel.NewsModel.SourceName. Rate: @newsModel.NewsModel.Rate</footer>
+                        <button class="col-12 btn btn-success" type="button" data-bs-toggle="collapse" data-bs-target="#collapseText" aria-expanded="false" aria-controls="collapseText">Read full text</button>
+                        <div class="collapse" id="collapseText">
+                            <div class="card card-body">
+                                @Html.Raw(newsModel.NewsModel.FullText)
+                            </div>
+                        </div>
+                        <footer class="blockquote-footer mt-auto">Published @newsModel.NewsModel.PublicationDate.ToString("d") by @newsModel.NewsModel.SourceName. Rate: @newsModel.NewsModel.Rate</footer>
                     </blockquote>
                 </div>
             </div>

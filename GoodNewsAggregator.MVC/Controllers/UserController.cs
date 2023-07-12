@@ -14,42 +14,58 @@ namespace GoodNewsAggregator.MVC.Controllers
     {
         private readonly IUserService _userService;
         private readonly IRoleService _roleService;
+        private readonly ILogger<UserController> _logger;
         private readonly IMapper _mapper;
 
         public UserController(IUserService userService,
-            IRoleService roleService,
+            IRoleService roleService, ILogger<UserController> logger,
             IMapper mapper)
         {
             _userService = userService;
             _roleService = roleService;
+            _logger = logger;
             _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> Register()
         {
+            _logger.LogInformation("Registration page is called");
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Register(UserRegisterModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var user = await _userService.RegisterUserAsync(model.Email, model.Username, model.Password);
-                if (user != null)
+                if (ModelState.IsValid)
                 {
-                    await Authenticate(user);
-                    return RedirectToAction("Account", "User", new { user.Username });
+                    _logger.LogInformation("Registration information passed validation");
+                    var user = await _userService.RegisterUserAsync(model.Email, model.Username, model.Password);
+                    if (user != null)
+                    {
+                        await Authenticate(user);
+                        _logger.LogInformation("Registration success");
+                        return RedirectToAction("Account", "User", new { user.Username });
+                    }
+                    _logger.LogInformation("Registration information was already used");
                 }
-
+                _logger.LogInformation("Registration information failed validation");
+                return View(model);
             }
-            return View(model);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> LogIn(string returnUrl = null)
         {
+            _logger.LogInformation("LogIn page is called");
+
             var model = new UserLogInModel()
             {
                 ReturnUrl = returnUrl
@@ -61,21 +77,33 @@ namespace GoodNewsAggregator.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> LogIn(UserLogInModel model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var user = await _userService.LogInUserAsync(model.Username, model.Password);
-                if (user != null)
+                if (ModelState.IsValid)
                 {
-                    await Authenticate(user);
-                    if (!string.IsNullOrEmpty(model.ReturnUrl))
+                    _logger.LogInformation("LogIn information passed validation");
+                    var user = await _userService.LogInUserAsync(model.Username, model.Password);
+                    if (user != null)
                     {
-                        return LocalRedirect(model.ReturnUrl);
-                    }                   
-                    return RedirectToAction("Account", "User", new { user.Username });
-                }
+                        await Authenticate(user);
+                        if (!string.IsNullOrEmpty(model.ReturnUrl))
+                        {
+                            return LocalRedirect(model.ReturnUrl);
+                        }
+                        _logger.LogInformation("LogIn success");
+                        return RedirectToAction("Account", "User", new { user.Username });
+                    }
+                    _logger.LogInformation("User with specified logIn information doesn't exist");
 
+                }
+                _logger.LogInformation("LogIn information failed validation");
+                return View(model);
             }
-            return View(model);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         [HttpGet]
@@ -93,6 +121,7 @@ namespace GoodNewsAggregator.MVC.Controllers
         
         public async Task<IActionResult> LogOut()
         {
+            _logger.LogInformation("LogOut is called");
             await HttpContext.SignOutAsync();
             return RedirectToAction("LogIn", "User");
         }
@@ -100,17 +129,29 @@ namespace GoodNewsAggregator.MVC.Controllers
         [Authorize]
         public async Task<IActionResult> Account([FromQuery] UserAccountSearchModel model)
         {
-            var userDto = await _userService.GetUserByUsername(model.Username);
-            if (userDto != null)
+            _logger.LogInformation("Account page is called");
+            try
             {
-                UserAccountModel userModel = _mapper.Map<UserAccountModel>(userDto);
-                if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
+                var userDto = await _userService.GetUserByUsername(model.Username);
+                if (userDto != null)
                 {
-                    return View("AdminAccount", userModel);
+                    UserAccountModel userModel = _mapper.Map<UserAccountModel>(userDto);
+                    if (User.FindFirstValue(ClaimTypes.Role) == "Admin")
+                    {
+                        _logger.LogInformation("Admin account page is called");
+                        return View("AdminAccount", userModel);
+                    }
+                    _logger.LogInformation("User account page is called");
+                    return View(userModel);
                 }
-                return View(userModel);
+                _logger.LogInformation("User with specified parameters doesn't exist");
+                return RedirectToAction("LogIn", "User");
             }
-            return Content($"User {model.Username} is not registed");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                return RedirectToAction("Error", "Home");
+            }
         }
 
         private async Task Authenticate(UserDto dto)
